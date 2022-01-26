@@ -1,0 +1,63 @@
+{% extends "rideSharing/base.html" %}
+{% block content %}
+<h1>Welcome to our Ride & Share System</h1>
+<h2>You great journey starting here!</h2>
+
+<br>
+<h2 class="text-muted">current username is {{user.username}}</h2>
+<br>
+
+<br>
+<a href="{% url 'requestOrder' %}">
+  <button>Request Order</button>
+</a>
+<br>
+
+<br>
+<a href="{% url 'driverPage' %}">
+  <button>Driver(Accept Order/Register vihecle)</button>
+</a>
+<br>
+
+<br>
+<a href="{% url 'requestSharing' %}">
+  <button>Request sharing</button>
+</a>
+<br>
+
+<br>
+<a href="{% url 'showAllOrders' %}">
+  <button>My order</button>
+</a>
+<br>
+
+<br>
+<p class="main">
+  You can see three choices on the menu, including "Start A Ride", "Find A Ride" and "Driver's Searching".
+</p>
+
+
+<br>
+<p class="main">
+  Start A Ride: Click this if you would like to start a ride and become the owner of this ride.
+</p>
+
+<br>
+
+<p class="main">
+  Find A Ride: Click this if you would like to find a person whose destination is same as yours and share a ride.
+</p>
+
+<br>
+
+<p class="main">
+  Driver's Searching: Click this if you want to work as a driver on our platform. Please register as a driver first!
+</p>
+
+<br>
+
+<p class="main">
+  Hope you have a good experience with us!
+</p>
+
+{% endblock content %}

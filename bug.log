@@ -1,0 +1,3 @@
+
+Not fixed bugs:
+1.  rideapp/views.py 中 @login_required  # 修饰不起作用. 未登录即可进入到内部界面√
