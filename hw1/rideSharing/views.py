@@ -44,8 +44,16 @@ def showAllOrders(request):
 # request a sharing order. User becomes rider sharer
 @login_required
 def requestSharing(request):
-    return render(request, 'rideSharing/requestSharing.html')
-
+    addr = request.GET.get("addr")
+    if addr:
+        ride_list=Ride.objects.filter(addr__exact=addr)
+    else:
+        ride_list=Ride.objects.all()
+    context = {
+        #'u_form': u_form,
+        'ride_list': ride_list,
+    }
+    return render(request, 'rideSharing/requestSharing.html', context=context)
 
 # driverPage. User registers a vehicle or accepts an order
 class driverPage(CreateView):
