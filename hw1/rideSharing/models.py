@@ -4,14 +4,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls.base import reverse
 
-TYPE_CHOICES = (
-    ("SUV", "SUV"),
-    ("COMPACT", "COMPACT"),
-    ("SEDAN", "SEDAN"),
-    ("COUPE", "COUPE"),
-    ("OTHER", "OTHER"),
-    ("--", "--")
-)
 
 class VehicleType(models.TextChoices):
     SUV = 'SU', _('SUV')
@@ -33,14 +25,14 @@ class Vehicle(models.Model):
     # vehicle info
     vehicle_type = models.CharField(max_length=2,choices=VehicleType.choices)
     plate_num = models.CharField(max_length=8)
-    seats = models.PositiveIntegerField(default=1)
+    seats = models.PositiveIntegerField(default=1)  # 除司机后的可用座位数量
     special_info = models.TextField(max_length=400,blank=True)
 
     def __str__(self):
         return self.vehicle_type + "Driver: " + self.vehicle_owner.username
 
     def get_absolute_url(self):
-        return reverse('driverPage')
+        return reverse('rideSharing-home')
 
 
 class Ride(models.Model):

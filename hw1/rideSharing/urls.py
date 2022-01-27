@@ -14,11 +14,14 @@ urlpatterns = [
     
     # home page menu
     path('home/', views.home, name='rideSharing-home'),
-    path('requestOrder/', login_required(views.requestOrder.as_view()), name='requestOrder'),
     path('showAllOrders/', views.showAllOrders, name='showAllOrders'),
-    path('driverPage/', login_required(views.driverPage.as_view()), name='driverPage'),
-    path('requestSharing/', views.requestSharing, name='requestSharing')
+    path('requestSharing/', views.requestSharing, name='requestSharing'),
 
+    # driver
+    path('driverVehicleRegister/', login_required(views.driverVehicleRegister.as_view()), name='driverVehicleRegister'),
+    path('driverSearchOrder/', views.driverSearchOrder, name='driverSearchOrder'),
+    path('driverConfirmOrder/<int:rid>', views.driverConfirmOrder, name='driverConfirmOrder'),
 
-
+    # owner
+    path('ownerRequestOrder/', login_required(views.ownerRequestOrder.as_view()), name='ownerRequestOrder')
 ]
