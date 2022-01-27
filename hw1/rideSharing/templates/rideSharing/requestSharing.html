@@ -7,6 +7,39 @@
 </p>
 
 <br>
+<h2 class="text-muted">Hello, {{user.username}}</h2>
+<br>
+
+<form action="#" method="get">
+  <div>
+    <label for="addr">Where do you want to go?</label>
+    <input name="addr" id="addr">
+  </div>
+  <div>
+    <button>Search Ride</button>
+  </div>
+</form>
+
+{% if ride_list %}
+<table>
+  <tr>
+    <th>Status</th>
+    <th>Owner</th>
+    <th>Address</th>
+  </tr>
+  {% for ride in ride_list %}
+  <tr>
+    <td>{{ ride.get_status_display }}</td>
+    <td>{{ ride.owner.username }}</td>
+    <td>{{ ride.addr }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>No ride available.</p>
+{% endif %}
+
+<br>
 <a href="{% url 'rideSharing-home' %}">
   <button>return</button>
 </a>

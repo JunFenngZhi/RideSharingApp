@@ -36,6 +36,27 @@ def home(request):
     return render(request, 'rideSharing/home.html', context=context)
 
 
+# Show orders(not finish)
+@login_required
+def showAllOrders(request):
+    return render(request, 'rideSharing/showAllorders.html')
+
+
+# request a sharing order. User becomes rider sharer
+@login_required
+def requestSharing(request):
+    addr = request.GET.get("addr")
+    if addr:
+        ride_list=Ride.objects.filter(addr__exact=addr)
+    else:
+        ride_list=Ride.objects.all()
+    context = {
+        #'u_form': u_form,
+        'ride_list': ride_list,
+    }
+    return render(request, 'rideSharing/requestSharing.html', context=context)
+
+
 # driverPage. User registers a vehicle or accepts an order
 class driverVehicleRegister(CreateView):
     model = Vehicle
@@ -62,6 +83,7 @@ def driverSearchOrder(request):
 
     return render(request, 'rideSharing/driverSearchOrder.html', context=context)
 
+
 # driver Confirm Order
 def driverConfirmOrder(request,rid):
     ride = Ride.objects.filter(pk = rid).first()
@@ -69,7 +91,6 @@ def driverConfirmOrder(request,rid):
     ride.status = RideStatus.COMFIRMED
     ride.save()
     return redirect('rideSharing-home')
-
 
 
 # request an order. User becomes ride owner
@@ -85,14 +106,3 @@ class ownerRequestOrder(CreateView):
 
 
 
-##not finish
-
-# Show orders
-@login_required
-def showAllOrders(request):
-    return render(request, 'rideSharing/showAllorders.html')
-
-# request a sharing order. User becomes rider sharer
-@login_required
-def requestSharing(request):
-    return render(request, 'rideSharing/requestSharing.html')
