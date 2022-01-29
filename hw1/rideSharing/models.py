@@ -58,6 +58,7 @@ class Ride(models.Model):
     # order status
     status = models.CharField(
         max_length=1, choices=RideStatus.choices, default=RideStatus.OPEN)
+    totalRequiredSeats = models.PositiveIntegerField(default=1)  # sharer+owner
 
     def __str__(self):
         return "owner:" + self.owner.username + " addr: " + self.addr

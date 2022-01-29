@@ -66,6 +66,8 @@
             <th>Arrival Time</th>
             <th>Owner's passenger Number</th>
             <th>Share Or Not</th>
+            <th>Sharer</th>
+            <th>Share seats</th>
             <th>Special Requirement</th>
             <th>Driver</th>
             <th>Vehicle info</th>
@@ -82,6 +84,8 @@
             <td>{{ ride.arrive_date|date:"m/d/Y P" }}</td>
             <td>{{ ride.passenger_num }}</td>
             <td>{{ ride.allow_share }}</td>
+            <td>{{ ride.sharer }}</td>
+            <td>{{ ride.sharer_seats }}</td>
             <td>{{ ride.special_requirements }}</td>
             <td>{{ ride.driver }}</td>
             <td><a href="{% url 'showVehicle' ride.id %}">Show Vehicle info</a></td>
@@ -107,6 +111,8 @@
             <th>Arrival Time</th>
             <th>Owner's passenger Number</th>
             <th>Share Or Not</th>
+            <th>Sharer</th>
+            <th>Share seats</th>
             <th>Special Requirement</th>
         </tr>
     </thead>
@@ -121,8 +127,9 @@
             <td>{{ ride.arrive_date|date:"m/d/Y P" }}</td>
             <td>{{ ride.passenger_num }}</td>
             <td>{{ ride.allow_share }}</td>
+            <td>{{ ride.sharer }}</td>
+            <td>{{ ride.sharer_seats }}</td>
             <td>{{ ride.special_requirements }}</td>
-
         </tr>
         {% endfor %}
     </tbody>

@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import Ride,Vehicle
 
 class RideAdmin(admin.ModelAdmin):
-    fields = ['addr', 'arrive_date', 'passenger_num','required_type', 'special_requirements','allow_share','status','driver','sharer','sharer_seats']
+    fields = ['addr', 'arrive_date', 'passenger_num','required_type', 'special_requirements','allow_share','status','driver','sharer','sharer_seats','totalRequiredSeats']
     list_display = ('owner','addr', 'arrive_date', 'passenger_num','required_type','status')
     list_filter = ['owner','status','passenger_num','arrive_date']
 
