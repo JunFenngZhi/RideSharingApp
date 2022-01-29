@@ -6,19 +6,11 @@ from django.contrib.auth.models import User
 from django.template import context
 from django.views.generic.edit import CreateView
 #from django.contrib.auth.mixins import LoginRequiredMixin
-<<<<<<< HEAD
-from .forms import UpdateRideForm, UserRegisterForm, UserUpdateForm
+from .forms import UpdateRideForm, UserRegisterForm, UserUpdateForm, RequestSharingForm
 from .models import Ride, RideStatus, Vehicle
 
-=======
-from .forms import UserRegisterForm, UserUpdateForm, RequestSharingForm
-from .models import Ride, RideStatus, Vehicle
-from django.db.models import F
->>>>>>> a3d139b8501d8c4486213d602063ab061c290393
 
 # create the register page. usingn register.html template.
-
-
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -49,19 +41,21 @@ def home(request):
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')
 
-
 @login_required
 def showOwnerOrders(request):
     # get all the open orders requested by current user
-    openRide_list = Ride.objects.filter(status=RideStatus.OPEN, owner=request.user)
+    openRide_list = Ride.objects.filter(
+        status=RideStatus.OPEN, owner=request.user)
     openRide_list = openRide_list.order_by('arrive_date')
 
-    # get all the conformed orders requested by current user(TODO:要显示司机和车的信息，加一个链接跳转)
-    conformed_list = Ride.objects.filter(status=RideStatus.COMFIRMED, owner=request.user)
+    # get all the conformed orders requested by current user
+    conformed_list = Ride.objects.filter(
+        status=RideStatus.CONFIRMED, owner=request.user)
     conformed_list = conformed_list.order_by('arrive_date')
 
-    # get all the complete orders requested by current user(TODO:要显示司机和车的信息，加一个链接跳转)
-    completedRide_list = Ride.objects.filter(status=RideStatus.COMPLETE, owner=request.user)
+    # get all the complete orders requested by current user
+    completedRide_list = Ride.objects.filter(
+        status=RideStatus.COMPLETE, owner=request.user)
     completedRide_list = completedRide_list.order_by('arrive_date')
 
     context = {
@@ -73,7 +67,7 @@ def showOwnerOrders(request):
     return render(request, 'rideSharing/showOwnerOrders.html', context=context)
 
 @login_required
-def editOwnerOrders(request,id):
+def editOwnerOrders(request, id):
     if request.method == "POST":
         ride_form = UpdateRideForm(request.POST)
         if ride_form.is_valid():  # 获取数据
@@ -92,13 +86,54 @@ def editOwnerOrders(request,id):
             cur_ride.save()
             return redirect('showOwnerOrders')  # 自动跳转回上一层
 
-    ride_form = UpdateRideForm()    
+    ride_form = UpdateRideForm()
     return render(request, 'rideSharing/editOwnerOrders.html', locals())
 
+@login_required
+def deleteOwnerOrders(request, id):
+    Ride.objects.get(id=id).delete()
+    return redirect('showOwnerOrders')  # 自动跳转回上一层
 
-# @login_required
-# def showVehicle(request,id):
-#     return render(request, 'rideSharing/showVehicle.html', locals())
+@login_required
+def showVehicle(request, id):
+    # 通过当前订单的司机名字定位到对应的user,用外键反查到该司机对应的车辆。
+    cur_ride = Ride.objects.get(id=id)
+    driver_name = cur_ride.driver
+    driver = User.objects.filter(username=driver_name).first()
+    shownVehicle = driver.owner_vehicle
+
+    context = {
+        'shownVehicle': shownVehicle
+    }
+
+    return render(request, 'rideSharing/showVehicle.html', context)
+
+@login_required
+def showDriverOrders(request):
+    # get all the conformed orders requested by current user
+    conformed_list = Ride.objects.filter(
+        status=RideStatus.CONFIRMED, driver=request.user.username)
+    conformed_list = conformed_list.order_by('arrive_date')
+
+    # get all the complete orders requested by current user
+    completedRide_list = Ride.objects.filter(
+        status=RideStatus.COMPLETE, driver=request.user.username)
+    completedRide_list = completedRide_list.order_by('arrive_date')
+
+    context = {
+        'conformed_list': conformed_list,
+        'completedRide_list': completedRide_list
+    }
+
+    return render(request, 'rideSharing/showDriverOrders.html', context=context)
+
+@login_required
+def completeDriverOrders(request,id):
+    ride = Ride.objects.filter(pk=id).first()
+    ride.status = RideStatus.COMPLETE
+    ride.save()
+
+    return redirect('showDriverOrders')
 
 
 
@@ -108,8 +143,6 @@ def editOwnerOrders(request,id):
 ############################################################
 # Sharer related pages
 # request a sharing order. User becomes rider sharer
-
-
 @login_required
 def requestSharing(request):
     if request.method == 'GET':
@@ -146,10 +179,6 @@ def requestSharing(request):
     return render(request, 'rideSharing/requestSharing.html', context=context)
 
 
-
-
-
-
 ############################################################
 # Driver related pages
 # driverPage. User registers a vehicle or accepts an order
@@ -184,12 +213,9 @@ def driverSearchOrder(request):
 def driverConfirmOrder(request, rid):
     ride = Ride.objects.filter(pk=rid).first()
     ride.driver = request.user.username
-    ride.status = RideStatus.COMFIRMED
+    ride.status = RideStatus.CONFIRMED
     ride.save()
     return redirect('rideSharing-home')
-
-
-
 
 
 ############################################################
