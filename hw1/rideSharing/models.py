@@ -15,7 +15,7 @@ class VehicleType(models.TextChoices):
 
 class RideStatus(models.TextChoices):
     OPEN = 'O', _('Open')
-    COMFIRMED = 'F', _('Comfirmed')
+    CONFIRMED = 'F', _('Confirmed')
     COMPLETE = 'C', _('Complete')
 
 

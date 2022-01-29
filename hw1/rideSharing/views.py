@@ -6,11 +6,19 @@ from django.contrib.auth.models import User
 from django.template import context
 from django.views.generic.edit import CreateView
 #from django.contrib.auth.mixins import LoginRequiredMixin
+<<<<<<< HEAD
 from .forms import UpdateRideForm, UserRegisterForm, UserUpdateForm
 from .models import Ride, RideStatus, Vehicle
 
+=======
+from .forms import UserRegisterForm, UserUpdateForm, RequestSharingForm
+from .models import Ride, RideStatus, Vehicle
+from django.db.models import F
+>>>>>>> a3d139b8501d8c4486213d602063ab061c290393
 
 # create the register page. usingn register.html template.
+
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -100,15 +108,39 @@ def editOwnerOrders(request,id):
 ############################################################
 # Sharer related pages
 # request a sharing order. User becomes rider sharer
+
+
 @login_required
 def requestSharing(request):
-    addr = request.GET.get("addr")
-    if addr:
-        ride_list = Ride.objects.filter(addr__exact=addr)
+    if request.method == 'GET':
+        form = RequestSharingForm(request.GET)
+        if form.is_valid():
+            addr = form.cleaned_data.get('addr')
+            earlist_time = form.cleaned_data.get('earlist_time')
+            latest_time = form.cleaned_data.get('latest_time')
+            num_sharer = form.cleaned_data.get('num_sharer')
+            canidate_list = Ride.objects.filter(
+                status=RideStatus.CONFIRMED,
+                allow_share=True,
+                addr__exact=addr,
+                arrive_date__lte=latest_time,
+                arrive_date__gte=earlist_time,
+                sharer="",
+                # driver__seats__gte=F('passenger_num')+num_sharer,
+            )
+            ride_list = canidate_list
+            # for ride in canidate_list:
+            #     car = Vehicle.objects.get(vehicle_owner__username=ride.sharer)
+            #     if car.seats >= ride.passenger_num+num_sharer:
+            #         ride_list.append(ride)
+
+        else:
+            ride_list = Ride.objects.filter(status=RideStatus.OPEN)
     else:
-        ride_list = Ride.objects.all()
+        form = RequestSharingForm()
+        ride_list = Ride.objects.filter(status=RideStatus.OPEN)
     context = {
-        # 'u_form': u_form,
+        'form': form,
         'ride_list': ride_list,
     }
     return render(request, 'rideSharing/requestSharing.html', context=context)

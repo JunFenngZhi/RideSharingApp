@@ -1,48 +1,61 @@
 {% extends "rideSharing/base.html" %}
 {% block content %}
 
-<br>
-<p class="main">
-  Request sharing
-</p>
+<div class="container">
+  <h3 class="text-muted">Hello, {{user.username}}</h3>
 
-<br>
-<h2 class="text-muted">Hello, {{user.username}}</h2>
-<br>
-
-<form action="#" method="get">
-  <div>
-    <label for="addr">Where do you want to go?</label>
-    <input name="addr" id="addr">
+  <div class="mb-3">
+    <form action="#" method="get">
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Search your ride below.</legend>
+        <div class="row">
+          {% for field in form %}
+          <div class="row mb-3">
+            <div class="col-sm-2">
+            {{ field.label_tag }}
+          </div>
+            <div class="col-sm-4">
+              {{ field }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </fieldset>
+      <div class="form-group">
+        <button class="btn btn-outline-info" type="submit">Search</button>
+      </div>
+    </form>
   </div>
-  <div>
-    <button>Search Ride</button>
-  </div>
-</form>
 
-{% if ride_list %}
-<table>
-  <tr>
-    <th>Status</th>
-    <th>Owner</th>
-    <th>Address</th>
-  </tr>
-  {% for ride in ride_list %}
-  <tr>
-    <td>{{ ride.get_status_display }}</td>
-    <td>{{ ride.owner.username }}</td>
-    <td>{{ ride.addr }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% else %}
-<p>No ride available.</p>
-{% endif %}
+  {% if ride_list %}
+  <table>
+    <tr>
+      <th>Status</th>
+      <th>Owner</th>
+      <th>Address</th>
+      <th>Arrival Time</th>
+      <th>Sharer</th>
+      <th>Driver</th>
+    </tr>
+    {% for ride in ride_list %}
+    <tr>
+      <td>{{ ride.get_status_display }}</td>
+      <td>{{ ride.owner.username }}</td>
+      <td>{{ ride.addr }}</td>
+      <td>{{ ride.arrive_date }}</td>
+      <td>{{ ride.sharer }}</td>
+      <td>{{ ride.driver }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>No ride available.</p>
+  {% endif %}
 
-<br>
-<a href="{% url 'rideSharing-home' %}">
-  <button>return</button>
-</a>
-<br>
-
+  <br>
+  <a href="{% url 'rideSharing-home' %}">
+    <button>return</button>
+  </a>
+  <br>
+</div>
 {% endblock content %}
