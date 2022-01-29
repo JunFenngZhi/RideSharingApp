@@ -6,9 +6,15 @@ from django.contrib.auth.models import User
 from django.template import context
 from django.views.generic.edit import CreateView
 #from django.contrib.auth.mixins import LoginRequiredMixin
+<<<<<<< HEAD
 from .forms import UpdateRideForm, UserRegisterForm, UserUpdateForm, RequestSharingForm
 from .models import Ride, RideStatus, Vehicle
 
+=======
+from .forms import UserRegisterForm, UserUpdateForm, RequestSharingForm
+from .models import Ride, RideStatus, Vehicle
+from django.db.models import F
+>>>>>>> 7afc425f34d6793376faef0072a4fb170e72d7c1
 
 # create the register page. usingn register.html template.
 def register(request):
@@ -37,6 +43,8 @@ def home(request):
 
 ############################################################
 # myOrders related pages
+
+
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')
@@ -48,12 +56,21 @@ def showOwnerOrders(request):
         status=RideStatus.OPEN, owner=request.user)
     openRide_list = openRide_list.order_by('arrive_date')
 
+<<<<<<< HEAD
     # get all the conformed orders requested by current user
     conformed_list = Ride.objects.filter(
         status=RideStatus.CONFIRMED, owner=request.user)
     conformed_list = conformed_list.order_by('arrive_date')
 
     # get all the complete orders requested by current user
+=======
+    # get all the conformed orders requested by current user(TODO:要显示司机和车的信息，加一个链接跳转)
+    conformed_list = Ride.objects.filter(
+        status=RideStatus.COMFIRMED, owner=request.user)
+    conformed_list = conformed_list.order_by('arrive_date')
+
+    # get all the complete orders requested by current user(TODO:要显示司机和车的信息，加一个链接跳转)
+>>>>>>> 7afc425f34d6793376faef0072a4fb170e72d7c1
     completedRide_list = Ride.objects.filter(
         status=RideStatus.COMPLETE, owner=request.user)
     completedRide_list = completedRide_list.order_by('arrive_date')
@@ -65,6 +82,7 @@ def showOwnerOrders(request):
     }
 
     return render(request, 'rideSharing/showOwnerOrders.html', context=context)
+
 
 @login_required
 def editOwnerOrders(request, id):
@@ -136,45 +154,59 @@ def completeDriverOrders(request,id):
     return redirect('showDriverOrders')
 
 
-
-
-
-
 ############################################################
 # Sharer related pages
 # request a sharing order. User becomes rider sharer
 @login_required
 def requestSharing(request):
-    if request.method == 'GET':
-        form = RequestSharingForm(request.GET)
-        if form.is_valid():
-            addr = form.cleaned_data.get('addr')
-            earlist_time = form.cleaned_data.get('earlist_time')
-            latest_time = form.cleaned_data.get('latest_time')
-            num_sharer = form.cleaned_data.get('num_sharer')
-            canidate_list = Ride.objects.filter(
-                status=RideStatus.CONFIRMED,
-                allow_share=True,
-                addr__exact=addr,
-                arrive_date__lte=latest_time,
-                arrive_date__gte=earlist_time,
-                sharer="",
-                # driver__seats__gte=F('passenger_num')+num_sharer,
-            )
-            ride_list = canidate_list
-            # for ride in canidate_list:
-            #     car = Vehicle.objects.get(vehicle_owner__username=ride.sharer)
-            #     if car.seats >= ride.passenger_num+num_sharer:
-            #         ride_list.append(ride)
-
-        else:
-            ride_list = Ride.objects.filter(status=RideStatus.OPEN)
+    if request.method == 'POST':
+        joinid = request.POST.get('ride_to_join')
+        if joinid is not None:
+            ride_to_join=Ride.objects.get(id=joinid)
+            ride_to_join.sharer=request.user.username
+            ride_to_join.save()
+        joinid = request.POST.get('ride_to_cancel')
+        if joinid is not None:
+            ride_to_join=Ride.objects.get(id=joinid)
+            ride_to_join.sharer=""
+            ride_to_join.save()
+    
+    form = RequestSharingForm(request.GET)
+    if form.is_valid():
+        show_result = True
+        addr = form.cleaned_data.get('addr')
+        earlist_time = form.cleaned_data.get('earlist_time')
+        latest_time = form.cleaned_data.get('latest_time')
+        num_sharer = form.cleaned_data.get('num_sharer')
+        canidate_list = Ride.objects.filter(
+            status=RideStatus.CONFIRMED,
+            allow_share=True,
+            addr__exact=addr,
+            arrive_date__lte=latest_time,
+            arrive_date__gte=earlist_time,
+            sharer="",
+            # driver__seats__gte=F('passenger_num')+num_sharer,
+        )
+        #ride_list = canidate_list
+        ride_list = []
+        for ride in canidate_list:
+            car = Vehicle.objects.get(vehicle_owner__username=ride.driver)
+            if car.seats >= ride.passenger_num+num_sharer:
+                ride_list.append(ride)
     else:
-        form = RequestSharingForm()
+        show_result = False
         ride_list = Ride.objects.filter(status=RideStatus.OPEN)
+    joined_list = Ride.objects.filter(
+        status=RideStatus.CONFIRMED,
+        allow_share=True,
+        sharer=request.user.username,
+    )
+
     context = {
         'form': form,
         'ride_list': ride_list,
+        'joined_list': joined_list,
+        'show_result': show_result,
     }
     return render(request, 'rideSharing/requestSharing.html', context=context)
 

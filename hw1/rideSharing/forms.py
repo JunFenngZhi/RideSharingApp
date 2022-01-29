@@ -19,6 +19,7 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
+<<<<<<< HEAD
 
 class UpdateRideForm(forms.Form):
     VEHICLE_TYPE_CHOICES = [
@@ -37,6 +38,8 @@ class UpdateRideForm(forms.Form):
     allow_share = forms.BooleanField(initial=False, required=False)
 
 
+=======
+>>>>>>> 7afc425f34d6793376faef0072a4fb170e72d7c1
 class RequestSharingForm(forms.Form):
     addr = forms.CharField(label='Your Destination', max_length=100)
     earlist_time = forms.DateTimeField(label='Earlist Time of Arrival',input_formats='2022-01-01 12:00')
