@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.template import context
 from django.views.generic.edit import CreateView
 #from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import UserRegisterForm, UserUpdateForm
-from .models import Ride, RideStatus,Vehicle
+from .forms import UpdateRideForm, UserRegisterForm, UserUpdateForm
+from .models import Ride, RideStatus, Vehicle
 
 
 # create the register page. usingn register.html template.
@@ -35,32 +35,95 @@ def home(request):
     }
     return render(request, 'rideSharing/home.html', context=context)
 
-
-# Show orders(not finish)
+############################################################
+# myOrders related pages
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')
 
 
+@login_required
+def showOwnerOrders(request):
+    # get all the open orders requested by current user
+    openRide_list = Ride.objects.filter(status=RideStatus.OPEN, owner=request.user)
+    openRide_list = openRide_list.order_by('arrive_date')
+
+    # get all the conformed orders requested by current user(TODO:要显示司机和车的信息，加一个链接跳转)
+    conformed_list = Ride.objects.filter(status=RideStatus.COMFIRMED, owner=request.user)
+    conformed_list = conformed_list.order_by('arrive_date')
+
+    # get all the complete orders requested by current user(TODO:要显示司机和车的信息，加一个链接跳转)
+    completedRide_list = Ride.objects.filter(status=RideStatus.COMPLETE, owner=request.user)
+    completedRide_list = completedRide_list.order_by('arrive_date')
+
+    context = {
+        'openRide_list': openRide_list,
+        'conformed_list': conformed_list,
+        'completedRide_list': completedRide_list
+    }
+
+    return render(request, 'rideSharing/showOwnerOrders.html', context=context)
+
+@login_required
+def editOwnerOrders(request,id):
+    if request.method == "POST":
+        ride_form = UpdateRideForm(request.POST)
+        if ride_form.is_valid():  # 获取数据
+            addr = ride_form.cleaned_data['addr']
+            arrive_date = ride_form.cleaned_data['arrive_date']
+            required_type = ride_form.cleaned_data['required_type']
+            passenger_num = ride_form.cleaned_data['passenger_num']
+            special_requirements = ride_form.cleaned_data['special_requirements']
+            # create the ride
+            cur_ride = Ride.objects.get(id=id)
+            cur_ride.addr = addr
+            cur_ride.arrive_date = arrive_date
+            cur_ride.required_type = required_type
+            cur_ride.passenger_num = passenger_num
+            cur_ride.special_requirements = special_requirements
+            cur_ride.save()
+            return redirect('showOwnerOrders')  # 自动跳转回上一层
+
+    ride_form = UpdateRideForm()    
+    return render(request, 'rideSharing/editOwnerOrders.html', locals())
+
+
+# @login_required
+# def showVehicle(request,id):
+#     return render(request, 'rideSharing/showVehicle.html', locals())
+
+
+
+
+
+
+############################################################
+# Sharer related pages
 # request a sharing order. User becomes rider sharer
 @login_required
 def requestSharing(request):
     addr = request.GET.get("addr")
     if addr:
-        ride_list=Ride.objects.filter(addr__exact=addr)
+        ride_list = Ride.objects.filter(addr__exact=addr)
     else:
-        ride_list=Ride.objects.all()
+        ride_list = Ride.objects.all()
     context = {
-        #'u_form': u_form,
+        # 'u_form': u_form,
         'ride_list': ride_list,
     }
     return render(request, 'rideSharing/requestSharing.html', context=context)
 
 
+
+
+
+
+############################################################
+# Driver related pages
 # driverPage. User registers a vehicle or accepts an order
 class driverVehicleRegister(CreateView):
     model = Vehicle
-    fields = ['vehicle_type', 'plate_num','special_info','seats']
+    fields = ['vehicle_type', 'plate_num', 'special_info', 'seats']
     template_name = 'rideSharing/driverVehicleRegister.html'
 
     def form_valid(self, form):
@@ -71,7 +134,8 @@ class driverVehicleRegister(CreateView):
 # driver search for order
 def driverSearchOrder(request):
     # 只显示乘客人数匹配载客量且车辆类型符合要求的订单
-    car_info = Vehicle.objects.filter(vehicle_owner=request.user).first() # 获取当前用户拥有的车辆(假如返回空，怎么处理/)
+    car_info = Vehicle.objects.filter(
+        vehicle_owner=request.user).first()  # 获取当前用户拥有的车辆(假如返回空，怎么处理/)
     ride_list = Ride.objects.filter(status=RideStatus.OPEN,
                                     required_type=car_info.vehicle_type,
                                     passenger_num__lte=car_info.seats)
@@ -85,24 +149,27 @@ def driverSearchOrder(request):
 
 
 # driver Confirm Order
-def driverConfirmOrder(request,rid):
-    ride = Ride.objects.filter(pk = rid).first()
+def driverConfirmOrder(request, rid):
+    ride = Ride.objects.filter(pk=rid).first()
     ride.driver = request.user.username
     ride.status = RideStatus.COMFIRMED
     ride.save()
     return redirect('rideSharing-home')
 
 
+
+
+
+############################################################
+# Owner related pages
 # request an order. User becomes ride owner
 class ownerRequestOrder(CreateView):
     model = Ride
-    fields = ['addr', 'arrive_date', 'passenger_num','required_type','special_requirements','allow_share']
+    fields = ['addr', 'arrive_date', 'passenger_num',
+              'required_type', 'special_requirements', 'allow_share']
     template_name = 'rideSharing/ownerRequestOrder.html'
     # success_url = '/home'  # 使用这个参数需要在前面加一个/回到上一层，不用这个参数则使用model.get_absolute_url()函数替代
 
     def form_valid(self, form):
         form.instance.owner = self.request.user   # 将当前操作写入owner字段
         return super().form_valid(form)
-
-
-

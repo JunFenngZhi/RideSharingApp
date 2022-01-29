@@ -35,7 +35,7 @@
             <td>{{ ride.arrive_date|date:"m/d/Y P" }}</td>
             <td>{{ ride.passenger_num }}</td>
             <td>{{ ride.allow_share }}</td>
-            <td>{{ ride.required_special }}</td>
+            <td>{{ ride.special_requirements }}</td>
             <td><a href="{% url 'driverConfirmOrder' ride.id %}">Accept this order</a></td>
 
         </tr>
@@ -44,3 +44,9 @@
 
 </table>
 
+
+<br>
+<a href="{% url 'rideSharing-home' %}">
+  <button>return</button>
+</a>
+<br>

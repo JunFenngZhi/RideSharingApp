@@ -6,3 +6,5 @@ TODO List:
 5、vehicle注册 √
 6、driver接单显示 √
 7、显示当前用户的所有订单
+8、owner修改订单后，将不符合要求的sharer移除，通知sharer
+9、sharer不能修改订单，除了将自己移出ride

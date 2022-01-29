@@ -1,0 +1,49 @@
+{% extends "rideSharing/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="col-md-4 col-md-offset-4">
+      <form class='form-editOwnerOrders' action="{% url 'editOwnerOrders' id %}" method="post">
+
+          {% csrf_token %}
+          <div class="form-group">
+              {{ ride_form.addr.label_tag }}
+              {{ ride_form.addr }}
+          </div>
+          <div class="form-group">
+            {{ ride_form.arrive_date.label_tag }}
+            {{ ride_form.arrive_date }}
+          </div>
+          <div class="form-group">
+            {{ ride_form.required_type.label_tag }}
+            {{ ride_form.required_type}}
+          </div>
+          <div class="form-group">
+            {{ ride_form.passenger_num.label_tag }}
+            {{ ride_form.passenger_num }}
+          </div>
+          <div class="form-group">
+            {{ ride_form.special_requirements.label_tag }}
+            {{ ride_form.special_requirements }}
+          </div>
+          <div class="form-group">
+            {{ ride_form.allow_share.label_tag }}
+            {{ ride_form.allow_share }}
+          </div>
+
+          <button type="reset" class="btn btn-default pull-left">reset</button>
+          <button type="submit" class="btn btn-primary pull-right">submit</button>
+
+      </form>
+    </div>
+</div> <!-- /container -->
+
+<br>
+<a href="{% url 'showOwnerOrders' %}">
+  <button>return</button>
+</a>
+<br>
+
+</body>
+
+
+{% endblock content %}
