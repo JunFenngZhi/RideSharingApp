@@ -22,7 +22,7 @@ class RideStatus(models.TextChoices):
 class Vehicle(models.Model):
     # vehicle-owner
     vehicle_owner = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
+        User, on_delete=models.CASCADE, primary_key=True, related_name='owner_vehicle')
 
     # vehicle info
     vehicle_type = models.CharField(max_length=2, choices=VehicleType.choices)

@@ -1,0 +1,38 @@
+<br>
+<p>
+    Here are the vehicle information you request.
+</p>
+<br>
+
+<table border="1">
+    <!-- tr表示每一行， td表示每一个元素 -->
+    <thead>
+        <tr>
+            <!-- tr表示table row， 指一行 -->
+            <!-- th相当于是列表的头，告知这一列是什么元素 -->
+            <th>Owner</th>
+            <th>vehicle_type</th>
+            <th>plate_num</th>
+            <th>seats</th>
+            <th>special_info</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <!-- td表示每一行里面的元素 -->
+            <td>{{ shownVehicle.vehicle_owner.username }}</td>
+            <td>{{ shownVehicle.get_vehicle_type_display}}</td>
+            <td>{{ shownVehicle.plate_num }}</td>
+            <td>{{ shownVehicle.seats }}</td>
+            <td>{{ shownVehicle.special_info }}</td>
+        </tr>
+    </tbody>
+
+</table>
+
+<br>
+<a href="{% url 'showOwnerOrders' %}">
+  <button>return</button>
+</a>
+<br>
