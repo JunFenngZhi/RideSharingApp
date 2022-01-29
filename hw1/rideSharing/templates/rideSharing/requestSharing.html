@@ -12,8 +12,8 @@
           {% for field in form %}
           <div class="row mb-3">
             <div class="col-sm-2">
-            {{ field.label_tag }}
-          </div>
+              {{ field.label_tag }}
+            </div>
             <div class="col-sm-4">
               {{ field }}
             </div>
@@ -27,35 +27,77 @@
     </form>
   </div>
 
+  {% if show_result %}
+  <legend class="border-bottom mb-4">Available Rides:</legend>
   {% if ride_list %}
-  <table>
-    <tr>
-      <th>Status</th>
-      <th>Owner</th>
-      <th>Address</th>
-      <th>Arrival Time</th>
-      <th>Sharer</th>
-      <th>Driver</th>
-    </tr>
-    {% for ride in ride_list %}
-    <tr>
-      <td>{{ ride.get_status_display }}</td>
-      <td>{{ ride.owner.username }}</td>
-      <td>{{ ride.addr }}</td>
-      <td>{{ ride.arrive_date }}</td>
-      <td>{{ ride.sharer }}</td>
-      <td>{{ ride.driver }}</td>
-    </tr>
-    {% endfor %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Status</th>
+        <th>Owner</th>
+        <th>Address</th>
+        <th>Arrival Time</th>
+        <th>Driver</th>
+        <th>Sharer</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ride in ride_list %}
+      <tr>
+        <td>{{ ride.get_status_display }}</td>
+        <td>{{ ride.owner.username }}</td>
+        <td>{{ ride.addr }}</td>
+        <td>{{ ride.arrive_date }}</td>
+        <td>{{ ride.driver }}</td>
+        <td>
+          <form action="" method=post>
+            {% csrf_token %}
+            {{ ride.sharer }}
+            <button name="ride_to_join" value="{{ ride.id }}" class="btn btn-outline-primary">Join</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
   {% else %}
   <p>No ride available.</p>
   {% endif %}
+  {% endif %}
 
-  <br>
-  <a href="{% url 'rideSharing-home' %}">
-    <button>return</button>
-  </a>
-  <br>
+  <legend class="border-bottom mb-4">Joined Rides:</legend>
+  {% if joined_list %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Status</th>
+        <th>Owner</th>
+        <th>Address</th>
+        <th>Arrival Time</th>
+        <th>Driver</th>
+        <th>Sharer</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ride in joined_list %}
+      <tr>
+        <td>{{ ride.get_status_display }}</td>
+        <td>{{ ride.owner.username }}</td>
+        <td>{{ ride.addr }}</td>
+        <td>{{ ride.arrive_date }}</td>
+        <td>{{ ride.driver }}</td>
+        <td>
+          <form action="" method=post>
+            {% csrf_token %}
+            <button name="ride_to_cancel" value="{{ ride.id }}" class="btn btn-outline-danger">Cancel</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Nothing.</p>
+  {% endif %}
 </div>
 {% endblock content %}
