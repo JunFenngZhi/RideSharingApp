@@ -30,14 +30,13 @@
   {% if show_result %}
   <legend class="border-bottom mb-4">Available Rides:</legend>
   {% if ride_list %}
-  <table class="table table-striped">
+  <table class="table table-striped table-hover table-responsive">
     <thead>
       <tr>
         <th>Status</th>
         <th>Owner</th>
         <th>Address</th>
         <th>Arrival Time</th>
-        <th>Driver</th>
         <th>Sharer</th>
       </tr>
     </thead>
@@ -48,12 +47,17 @@
         <td>{{ ride.owner.username }}</td>
         <td>{{ ride.addr }}</td>
         <td>{{ ride.arrive_date }}</td>
-        <td>{{ ride.driver }}</td>
         <td>
           <form action="" method=post>
             {% csrf_token %}
-            {{ ride.sharer }}
-            <button name="ride_to_join" value="{{ ride.id }}" class="btn btn-outline-primary">Join</button>
+            <div class="col col-sm-4">
+              <div class="input-group">
+                <input type="hidden" name="ride_to_join" value="{{ ride.id }}" />
+                <input name="n_seats" type="number" min="1" required class="form-control" placeholder="# seats"
+                  aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button type="submit" class="btn btn-outline-primary" id="button-addon2">Button</button>
+              </div>
+            </div>
           </form>
         </td>
       </tr>
@@ -67,14 +71,14 @@
 
   <legend class="border-bottom mb-4">Joined Rides:</legend>
   {% if joined_list %}
-  <table class="table table-striped">
+  <table class="table table-striped table-hover">
     <thead>
       <tr>
         <th>Status</th>
         <th>Owner</th>
         <th>Address</th>
         <th>Arrival Time</th>
-        <th>Driver</th>
+        <th>Your Seats</th>
         <th>Sharer</th>
       </tr>
     </thead>
@@ -85,7 +89,7 @@
         <td>{{ ride.owner.username }}</td>
         <td>{{ ride.addr }}</td>
         <td>{{ ride.arrive_date }}</td>
-        <td>{{ ride.driver }}</td>
+        <td>{{ ride.sharer_seats }}</td>
         <td>
           <form action="" method=post>
             {% csrf_token %}

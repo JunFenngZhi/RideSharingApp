@@ -13,17 +13,25 @@
 </a>
 <br>
 
-<br>
-<a href="{% url 'driverVehicleRegister' %}">
-  <button>Driver(Register vihecle)</button>
-</a>
-<br>
-
+{% if is_driver %}
 <br>
 <a href="{% url 'driverSearchOrder' %}">
   <button>Driver(Driver Search for order)</button>
 </a>
 <br>
+
+<br>
+<a href="{% url 'driverVehicleRegister' %}">
+  <button>Driver(Update vihecle info)</button>
+</a>
+<br>
+{% else %}
+<br>
+<a href="{% url 'driverVehicleRegister' %}">
+  <button>Driver(Register vihecle)</button>
+</a>
+<br>
+{% endif %}
 
 <br>
 <a href="{% url 'requestSharing' %}">
