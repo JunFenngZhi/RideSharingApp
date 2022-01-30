@@ -40,7 +40,6 @@ def home(request):
 ############################################################
 # myOrders related pages
 
-
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')
@@ -138,6 +137,31 @@ def completeDriverOrders(request,id):
     ride.save()
 
     return redirect('showDriverOrders')
+
+@login_required
+def showSharerOrders(request):
+    # get all the open orders requested by current user
+    openRide_list = Ride.objects.filter(
+        status=RideStatus.OPEN, sharer=request.user)
+    openRide_list = openRide_list.order_by('arrive_date')
+
+    # get all the conformed orders requested by current user
+    conformed_list = Ride.objects.filter(
+        status=RideStatus.CONFIRMED, sharer=request.user)
+    conformed_list = conformed_list.order_by('arrive_date')
+
+    # get all the complete orders requested by current user
+    completedRide_list = Ride.objects.filter(
+        status=RideStatus.COMPLETE, sharer=request.user)
+    completedRide_list = completedRide_list.order_by('arrive_date')
+
+    context = {
+        'openRide_list': openRide_list,
+        'conformed_list': conformed_list,
+        'completedRide_list': completedRide_list
+    }
+
+    return render(request, 'rideSharing/showOwnerOrders.html', context=context)
 
 
 ############################################################

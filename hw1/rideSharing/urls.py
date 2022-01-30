@@ -19,6 +19,7 @@ urlpatterns = [
     path('showAllOrders/', views.showAllOrders, name='showAllOrders'),
     path('showOwnerOrders/', views.showOwnerOrders, name='showOwnerOrders'),
     path('showDriverOrders/', views.showDriverOrders, name='showDriverOrders'),
+    path('showSharerOrders/', views.showSharerOrders, name='showSharerOrders'),
     path('completeDriverOrders/<int:id>', views.completeDriverOrders, name='completeDriverOrders'),
     path('editOwnerOrders/<int:id>', views.editOwnerOrders, name='editOwnerOrders'),
     path('deleteOwnerOrders/<int:id>', views.deleteOwnerOrders, name='deleteOwnerOrders'),
