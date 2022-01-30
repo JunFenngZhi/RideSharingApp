@@ -29,7 +29,8 @@ SECRET_KEY = 'django-insecure-3xpum-_#^c&20*8v3l-nit05(5^!)fp$7w40a!+eeag22%^mm)
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1',
-                 'vcm-24026.vm.duke.edu']
+                 'vcm-24026.vm.duke.edu',
+                 'gl137-ece568-a.colab.duke.edu']
 
 
 # Application definition

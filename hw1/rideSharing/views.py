@@ -28,7 +28,8 @@ def register(request):
 # create home page after login
 @login_required
 def home(request):
-    is_driver = Vehicle.objects.filter(vehicle_owner_id=request.user.id).exists()
+    is_driver = Vehicle.objects.filter(
+        vehicle_owner_id=request.user.id).exists()
     # 创建表单，获取发起request的用户的信息，将form封装成dict传入render
     u_form = UserUpdateForm(instance=request.user)
     context = {
@@ -44,6 +45,7 @@ def home(request):
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')
+
 
 @login_required
 def showOwnerOrders(request):
@@ -70,6 +72,7 @@ def showOwnerOrders(request):
 
     return render(request, 'rideSharing/showOwnerOrders.html', context=context)
 
+
 @login_required
 def editOwnerOrders(request, id):
     if request.method == "POST":
@@ -93,10 +96,12 @@ def editOwnerOrders(request, id):
     ride_form = UpdateRideForm()
     return render(request, 'rideSharing/editOwnerOrders.html', locals())
 
+
 @login_required
 def deleteOwnerOrders(request, id):
     Ride.objects.get(id=id).delete()
     return redirect('showOwnerOrders')  # 自动跳转回上一层
+
 
 @login_required
 def showVehicle(request, id):
@@ -111,6 +116,7 @@ def showVehicle(request, id):
     }
 
     return render(request, 'rideSharing/showVehicle.html', context)
+
 
 @login_required
 def showDriverOrders(request):
@@ -131,8 +137,9 @@ def showDriverOrders(request):
 
     return render(request, 'rideSharing/showDriverOrders.html', context=context)
 
+
 @login_required
-def completeDriverOrders(request,id):
+def completeDriverOrders(request, id):
     ride = Ride.objects.filter(pk=id).first()
     ride.status = RideStatus.COMPLETE
     ride.save()
@@ -148,23 +155,26 @@ def requestSharing(request):
     if request.method == 'POST':
         joinid = request.POST.get('ride_to_join')
         if joinid is not None:
-            ride_to_join=Ride.objects.get(id=joinid)
-            ride_to_join.sharer=request.user.username
-            ride_to_join.sharer_seats=request.POST.get('n_seats')
+            ride_to_join = Ride.objects.get(id=joinid)
+            ride_to_join.sharer = request.user.username
+            ride_to_join.sharer_seats = request.POST.get('n_seats')
+            ride_to_join.totalRequiredSeats = ride_to_join.totalRequiredSeats + int(request.POST.get('n_seats'))
             ride_to_join.save()
         joinid = request.POST.get('ride_to_cancel')
         if joinid is not None:
-            ride_to_join=Ride.objects.get(id=joinid)
-            ride_to_join.sharer=""
-            ride_to_join.sharer_seats=0
+            ride_to_join = Ride.objects.get(id=joinid)
+            ride_to_join.sharer = ""
+            ride_to_join.totalRequiredSeats = ride_to_join.totalRequiredSeats - ride_to_join.sharer_seats
+            ride_to_join.sharer_seats = 0
             ride_to_join.save()
-    
+
     form = RequestSharingForm(request.GET)
     if form.is_valid():
         show_result = True
         addr = form.cleaned_data.get('addr')
         earlist_time = form.cleaned_data.get('earlist_time')
         latest_time = form.cleaned_data.get('latest_time')
+        special_requirements = form.cleaned_data.get('special_requirements')
         #num_sharer = form.cleaned_data.get('num_sharer')
         canidate_list = Ride.objects.filter(
             status=RideStatus.OPEN,
@@ -175,15 +185,22 @@ def requestSharing(request):
             sharer="",
             # driver__seats__gte=F('passenger_num')+num_sharer,
         )
-        ride_list = canidate_list
-        # ride_list = []
-        # for ride in canidate_list:
-        #     car = Vehicle.objects.get(vehicle_owner__username=ride.driver)
-        #     if car.seats >= ride.passenger_num+num_sharer:
-        #         ride_list.append(ride)
+        if special_requirements:
+            ride_list = canidate_list.filter(special_requirements=special_requirements)
+        else:
+            ride_list = canidate_list
+        # if special_requirements:
+        #     ride_list = []
+        #     for ride in canidate_list:
+        #         car = Vehicle.objects.get(vehicle_owner__username=ride.driver)
+        #         if car.special_info == special_requirements:
+        #             ride_list.append(ride)
+        # else:
+        #     ride_list = canidate_list
     else:
         show_result = False
         ride_list = Ride.objects.filter(status=RideStatus.OPEN)
+    
     joined_list = Ride.objects.filter(
         status=RideStatus.OPEN,
         allow_share=True,
@@ -250,5 +267,5 @@ class ownerRequestOrder(CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user   # 将当前操作写入owner字段
-        form.instance.totalRequiredSeats = form.instance.passenger_num # not test
+        form.instance.totalRequiredSeats = form.instance.passenger_num  # not test
         return super().form_valid(form)
