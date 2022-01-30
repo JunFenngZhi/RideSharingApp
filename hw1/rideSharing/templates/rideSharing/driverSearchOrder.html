@@ -20,6 +20,8 @@
             <th>Arrival Time</th>
             <th>Owner's passenger Number</th>
             <th>Share Or Not</th>
+            <th>Sharer</th>
+            <th>Share seats</th>
             <th>Special Requirement</th>
             <th>Accep Link</th>
         </tr>
@@ -35,6 +37,8 @@
             <td>{{ ride.arrive_date|date:"m/d/Y P" }}</td>
             <td>{{ ride.passenger_num }}</td>
             <td>{{ ride.allow_share }}</td>
+            <td>{{ ride.sharer }}</td>
+            <td>{{ ride.sharer_seats }}</td>
             <td>{{ ride.special_requirements }}</td>
             <td><a href="{% url 'driverConfirmOrder' ride.id %}">Accept this order</a></td>
 
