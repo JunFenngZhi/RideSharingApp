@@ -1,0 +1,139 @@
+
+<br>
+<p>
+    Here are all the orders you share.
+</p>
+<br>
+
+<p>
+    OPEN orders:
+</p>
+<table border="1">
+    <!-- tr表示每一行， td表示每一个元素 -->
+    <thead>
+        <tr>
+            <!-- tr表示table row， 指一行 -->
+            <!-- th相当于是列表的头，告知这一列是什么元素 -->
+            <th>Owner</th>
+            <th>Request vehicle type</th>
+            <th>Destination</th>
+            <th>Arrival Time</th>
+            <th>Owner's passenger Number</th>
+            <th>Share Or Not</th>
+            <th>Sharer</th>
+            <th>Share seats</th>
+            <th>Special Requirement</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for ride in openRide_list %}
+        <tr>
+            <!-- td表示每一行里面的元素 -->
+            <td>{{ ride.owner.username }}</td>
+            <td>{{ ride.get_required_type_display}}</td>
+            <td>{{ ride.addr }}</td>
+            <td>{{ ride.arrive_date|date:"m/d/Y P" }}</td>
+            <td>{{ ride.passenger_num }}</td>
+            <td>{{ ride.allow_share }}</td>
+            <td>{{ ride.sharer }}</td>
+            <td>{{ ride.sharer_seats }}</td>
+            <td>{{ ride.special_requirements }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+
+<p>
+    Confirmed orders:
+</p>
+<table border="1">
+    <!-- tr表示每一行， td表示每一个元素 -->
+    <thead>
+        <tr>
+            <!-- tr表示table row， 指一行 -->
+            <!-- th相当于是列表的头，告知这一列是什么元素 -->
+            <th>Owner</th>
+            <th>Request vehicle type</th>
+            <th>Destination</th>
+            <th>Arrival Time</th>
+            <th>Owner's passenger Number</th>
+            <th>Share Or Not</th>
+            <th>Sharer</th>
+            <th>Share seats</th>
+            <th>Special Requirement</th>
+            <th>Driver</th>
+            <th>Vehicle info</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for ride in conformed_list %}
+        <tr>
+            <!-- td表示每一行里面的元素 -->
+            <td>{{ ride.owner.username }}</td>
+            <td>{{ ride.get_required_type_display}}</td>
+            <td>{{ ride.addr }}</td>
+            <td>{{ ride.arrive_date|date:"m/d/Y P" }}</td>
+            <td>{{ ride.passenger_num }}</td>
+            <td>{{ ride.allow_share }}</td>
+            <td>{{ ride.sharer }}</td>
+            <td>{{ ride.sharer_seats }}</td>
+            <td>{{ ride.special_requirements }}</td>
+            <td>{{ ride.driver }}</td>
+            <td><a href="{% url 'showVehicle' ride.id %}">Show Vehicle info</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+
+<p>
+    Completed orders:
+</p>
+<table border="1">
+    <!-- tr表示每一行， td表示每一个元素 -->
+    <thead>
+        <tr>
+            <!-- tr表示table row， 指一行 -->
+            <!-- th相当于是列表的头，告知这一列是什么元素 -->
+            <th>Owner</th>
+            <th>Request vehicle type</th>
+            <th>Destination</th>
+            <th>Arrival Time</th>
+            <th>Owner's passenger Number</th>
+            <th>Share Or Not</th>
+            <th>Sharer</th>
+            <th>Share seats</th>
+            <th>Special Requirement</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for ride in completedRide_list %}
+        <tr>
+            <!-- td表示每一行里面的元素 -->
+            <td>{{ ride.owner.username }}</td>
+            <td>{{ ride.get_required_type_display}}</td>
+            <td>{{ ride.addr }}</td>
+            <td>{{ ride.arrive_date|date:"m/d/Y P" }}</td>
+            <td>{{ ride.passenger_num }}</td>
+            <td>{{ ride.allow_share }}</td>
+            <td>{{ ride.sharer }}</td>
+            <td>{{ ride.sharer_seats }}</td>
+            <td>{{ ride.special_requirements }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+
+<br>
+<a href="{% url 'showAllOrders' %}">
+  <button>return</button>
+</a>
+<br>

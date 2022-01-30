@@ -41,6 +41,7 @@ def home(request):
 ############################################################
 # myOrders related pages
 
+
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')
@@ -145,6 +146,7 @@ def completeDriverOrders(request, id):
 
     return redirect('showDriverOrders')
 
+
 @login_required
 def showSharerOrders(request):
     # get all the open orders requested by current user
@@ -168,7 +170,7 @@ def showSharerOrders(request):
         'completedRide_list': completedRide_list
     }
 
-    return render(request, 'rideSharing/showOwnerOrders.html', context=context)
+    return render(request, 'rideSharing/showSharerOrders.html', context=context)
 
 
 ############################################################
@@ -182,13 +184,15 @@ def requestSharing(request):
             ride_to_join = Ride.objects.get(id=joinid)
             ride_to_join.sharer = request.user.username
             ride_to_join.sharer_seats = request.POST.get('n_seats')
-            ride_to_join.totalRequiredSeats = ride_to_join.totalRequiredSeats + int(request.POST.get('n_seats'))
+            ride_to_join.totalRequiredSeats = ride_to_join.totalRequiredSeats + \
+                int(request.POST.get('n_seats'))
             ride_to_join.save()
         joinid = request.POST.get('ride_to_cancel')
         if joinid is not None:
             ride_to_join = Ride.objects.get(id=joinid)
             ride_to_join.sharer = ""
-            ride_to_join.totalRequiredSeats = ride_to_join.totalRequiredSeats - ride_to_join.sharer_seats
+            ride_to_join.totalRequiredSeats = ride_to_join.totalRequiredSeats - \
+                ride_to_join.sharer_seats
             ride_to_join.sharer_seats = 0
             ride_to_join.save()
 
@@ -209,8 +213,9 @@ def requestSharing(request):
             sharer="",
             # driver__seats__gte=F('passenger_num')+num_sharer,
         )
-        if special_requirements:
-            ride_list = canidate_list.filter(special_requirements=special_requirements)
+        if special_requirements != "":
+            ride_list = canidate_list.filter(
+                special_requirements=special_requirements)
         else:
             ride_list = canidate_list
         # if special_requirements:
@@ -224,7 +229,7 @@ def requestSharing(request):
     else:
         show_result = False
         ride_list = Ride.objects.filter(status=RideStatus.OPEN)
-    
+
     joined_list = Ride.objects.filter(
         status=RideStatus.OPEN,
         allow_share=True,
@@ -251,6 +256,13 @@ class driverVehicleRegister(CreateView):
     def form_valid(self, form):
         form.instance.vehicle_owner = self.request.user   # 将当前操作写入owner字段
         return super().form_valid(form)
+
+
+# delete driver's vehicle
+def vehicleDelete(request):
+    vehicle = request.user.owner_vehicle
+    vehicle.delete()
+    return redirect('rideSharing-home')
 
 
 # driver search for order

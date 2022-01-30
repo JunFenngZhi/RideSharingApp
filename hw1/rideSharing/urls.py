@@ -28,6 +28,7 @@ urlpatterns = [
     # driver
     path('driverVehicleRegister/', login_required(views.driverVehicleRegister.as_view()), name='driverVehicleRegister'),
     path('driverSearchOrder/', views.driverSearchOrder, name='driverSearchOrder'),
+    path('vehicleDelete/', views.vehicleDelete, name='vehicleDelete'),
     path('driverConfirmOrder/<int:rid>', views.driverConfirmOrder, name='driverConfirmOrder'),
     
 
