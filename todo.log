@@ -1,10 +1,8 @@
+
 TODO List:
-
 8、owner修改订单后，将不符合要求的sharer移除（通知sharer)
-
-13、用户能够修改个人信息，删除车辆? （峰）
 14、司机接单后，给owner和shareer发邮件 （炫）
-15、sharer显示自己的订单
+
 
 
 
@@ -18,6 +16,9 @@ FINISH:
 11、显示所有和driver有关的订单。只需要显示conformed状态和Completed状态的即可。conformed状态的订单，司机可以将其修改成complete √
 10、显示和owner有关的所有订单，并且可以编辑、删除状态为Open的订单。显示conformed后的订单的车辆信息。 √
 15、调整订单显示，把sharer 人数也显示出来√
-12、司机接单时，需要计算人数（owner+sharer）来判断能否接单：  加了一个字段totalRequiredSeats，接单时进行判断。√
+12、司机接单时，需要计算人数（owner+sharer）来判断能否接单:  加了一个字段totalRequiredSeats，接单时进行判断。√
 2、home_page 我要接单和注册车辆按钮动态变化  (炫解决)√
 9、sharer不能修改订单，除了将自己移出ride √
+15、sharer显示自己的订单 √
+16、用户可以删除车辆√
+13、用户能够修改个人信息（峰）√

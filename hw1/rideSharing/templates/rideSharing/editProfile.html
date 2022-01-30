@@ -1,0 +1,30 @@
+{% extends "rideSharing/base.html" %}
+
+{% block content %}
+<div class="content-section">
+    <div class="media">
+      <div class="media-body">
+        <h2 class="account-heading">{{ user.username }}</h2>
+        <p class="text-secondary">{{ user.email }}</p>
+      </div>
+    </div>
+    <!-- FORM HERE -->
+    <!-- Change the encoding of the form data: multipart, to make sure the image is properly saved -->
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Profile Info</legend>
+          {{ u_form }}
+      </fieldset>
+      <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Update</button>
+      </div>
+  </form>
+  </div>
+
+<br>
+<a href="{% url 'rideSharing-home' %}">
+  <button>return</button>
+</a>
+<br>
+{% endblock content %}

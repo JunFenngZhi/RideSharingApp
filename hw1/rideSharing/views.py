@@ -38,10 +38,27 @@ def home(request):
     }
     return render(request, 'rideSharing/home.html', context=context)
 
+# edit user profile
+@login_required
+def editProfile(request):
+    if request.method == 'POST': 
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        # Update the forms
+        if u_form.is_valid():     
+            u_form.save()
+        # Get feedback to user and redirect them to profile page
+        # messages.success(request, f'Your account has been updated!') //useless
+        return redirect('editProfile')          
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+    context = {
+        'u_form': u_form,
+    }
+
+    return render(request, 'rideSharing/editProfile.html', context)
+
 ############################################################
 # myOrders related pages
-
-
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')

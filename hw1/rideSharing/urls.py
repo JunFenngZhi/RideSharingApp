@@ -14,6 +14,7 @@ urlpatterns = [
     
     # home page menu
     path('home/', views.home, name='rideSharing-home'),
+    path('editProfile/', views.editProfile, name='editProfile'),
 
     # all orders
     path('showAllOrders/', views.showAllOrders, name='showAllOrders'),
