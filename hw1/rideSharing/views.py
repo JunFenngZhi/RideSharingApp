@@ -184,6 +184,8 @@ def requestSharing(request):
             arrive_date__gte=earlist_time,
             sharer="",
             # driver__seats__gte=F('passenger_num')+num_sharer,
+        ).exclude(
+            owner=request.user
         )
         if special_requirements:
             ride_list = canidate_list.filter(special_requirements=special_requirements)
