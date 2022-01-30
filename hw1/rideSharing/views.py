@@ -6,15 +6,9 @@ from django.contrib.auth.models import User
 from django.template import context
 from django.views.generic.edit import CreateView
 #from django.contrib.auth.mixins import LoginRequiredMixin
-<<<<<<< HEAD
 from .forms import UpdateRideForm, UserRegisterForm, UserUpdateForm, RequestSharingForm
 from .models import Ride, RideStatus, Vehicle
 
-=======
-from .forms import UserRegisterForm, UserUpdateForm, RequestSharingForm
-from .models import Ride, RideStatus, Vehicle
-from django.db.models import F
->>>>>>> 6c21d7ed8a36afe878926119dbe4b71659367e36
 
 # create the register page. usingn register.html template.
 def register(request):
@@ -58,21 +52,12 @@ def showOwnerOrders(request):
         status=RideStatus.OPEN, owner=request.user)
     openRide_list = openRide_list.order_by('arrive_date')
 
-<<<<<<< HEAD
     # get all the conformed orders requested by current user
     conformed_list = Ride.objects.filter(
         status=RideStatus.CONFIRMED, owner=request.user)
     conformed_list = conformed_list.order_by('arrive_date')
 
     # get all the complete orders requested by current user
-=======
-    # get all the conformed orders requested by current user(TODO:要显示司机和车的信息，加一个链接跳转)
-    conformed_list = Ride.objects.filter(
-        status=RideStatus.COMFIRMED, owner=request.user)
-    conformed_list = conformed_list.order_by('arrive_date')
-
-    # get all the complete orders requested by current user(TODO:要显示司机和车的信息，加一个链接跳转)
->>>>>>> 6c21d7ed8a36afe878926119dbe4b71659367e36
     completedRide_list = Ride.objects.filter(
         status=RideStatus.COMPLETE, owner=request.user)
     completedRide_list = completedRide_list.order_by('arrive_date')
