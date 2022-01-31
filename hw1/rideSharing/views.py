@@ -30,25 +30,33 @@ def register(request):
 def home(request):
     is_driver = Vehicle.objects.filter(
         vehicle_owner_id=request.user.id).exists()
+    if is_driver:
+        has_incomplete_rides = Ride.objects.filter(driver=request.user,
+                            status=RideStatus.CONFIRMED).exists()
+    else:
+        has_incomplete_rides = True
     # 创建表单，获取发起request的用户的信息，将form封装成dict传入render
     u_form = UserUpdateForm(instance=request.user)
     context = {
         'u_form': u_form,
         'is_driver': is_driver,
+        'has_incomplete_rides': has_incomplete_rides
     }
     return render(request, 'rideSharing/home.html', context=context)
 
 # edit user profile
+
+
 @login_required
 def editProfile(request):
-    if request.method == 'POST': 
+    if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         # Update the forms
-        if u_form.is_valid():     
+        if u_form.is_valid():
             u_form.save()
         # Get feedback to user and redirect them to profile page
         # messages.success(request, f'Your account has been updated!') //useless
-        return redirect('editProfile')          
+        return redirect('editProfile')
     else:
         u_form = UserUpdateForm(instance=request.user)
     context = {
@@ -59,6 +67,8 @@ def editProfile(request):
 
 ############################################################
 # myOrders related pages
+
+
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')

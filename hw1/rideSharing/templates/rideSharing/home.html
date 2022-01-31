@@ -26,11 +26,14 @@
 </a>
 <br>
 
+{% if not has_incomplete_rides %}
 <br>
 <a href="{% url 'driverVehicleRegister' %}">
   <button>Driver(Update vihecle info)</button>
 </a>
 <br>
+{% endif %}
+
 {% else %}
 <br>
 <a href="{% url 'driverVehicleRegister' %}">
