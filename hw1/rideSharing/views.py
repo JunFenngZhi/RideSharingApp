@@ -46,8 +46,6 @@ def home(request):
     return render(request, 'rideSharing/home.html', context=context)
 
 # edit user profile
-
-
 @login_required
 def editProfile(request):
     if request.method == 'POST':
@@ -68,8 +66,6 @@ def editProfile(request):
 
 ############################################################
 # myOrders related pages
-
-
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')
