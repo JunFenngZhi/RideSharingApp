@@ -1,0 +1,27 @@
+1. In views.py, @login_required decorator does not work with classes. So those pages can be accessed without login.
+Solution:
+    Added login_required() to the corresponding as_view() in urls.py
+
+2. User can register a vehicle even if they already have one. (but a user can have only one car)
+Solution:
+    Change the title to "Edit Vehicle Info" if the user already has a vehicle.
+
+3. A user without vehicle can also claim a open ride. But doing so would result in data corruption.
+Solution:
+    Hiding the link to "search ride as a driver" in the home page if the user does not have a vehicle.
+
+4. A driver can still edit the info for his vehicle, while he still have incomplete ride.
+Solution:
+    Hiding the link to "Edit Vehicle Info" in the home page if the user is a driver and have confirmed rides.
+
+5. A user can join a ride owned by himself as a sharer.
+Solution:
+    Added checks to exclude such case from searching result.
+
+6. We avoided a lot of illegal user operations by hiding the links. But a malicious user may still be able to forge a http post or get request to those illegal area.
+Solution:
+    TODO: add checks on every form.
+
+7. We are using the default login page, which do not have a captcha and may be vulnerable to brute-force attacks.
+Solution:
+    TODO: add captcha.
