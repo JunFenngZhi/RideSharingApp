@@ -31,11 +31,17 @@ def register(request):
 def home(request):
     is_driver = Vehicle.objects.filter(
         vehicle_owner_id=request.user.id).exists()
+    if is_driver:
+        has_incomplete_rides = Ride.objects.filter(driver=request.user,
+                            status=RideStatus.CONFIRMED).exists()
+    else:
+        has_incomplete_rides = True
     # 创建表单，获取发起request的用户的信息，将form封装成dict传入render
     u_form = UserUpdateForm(instance=request.user)
     context = {
         'u_form': u_form,
         'is_driver': is_driver,
+        'has_incomplete_rides': has_incomplete_rides
     }
     return render(request, 'rideSharing/home.html', context=context)
 
