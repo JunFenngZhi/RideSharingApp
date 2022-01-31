@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.template import context
 from django.views.generic.edit import CreateView
-#from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
+from django.conf import settings
 from .forms import UpdateRideForm, UserRegisterForm, UserUpdateForm, RequestSharingForm
 from .models import Ride, RideStatus, Vehicle
 
@@ -39,16 +40,18 @@ def home(request):
     return render(request, 'rideSharing/home.html', context=context)
 
 # edit user profile
+
+
 @login_required
 def editProfile(request):
-    if request.method == 'POST': 
+    if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         # Update the forms
-        if u_form.is_valid():     
+        if u_form.is_valid():
             u_form.save()
         # Get feedback to user and redirect them to profile page
         # messages.success(request, f'Your account has been updated!') //useless
-        return redirect('editProfile')          
+        return redirect('editProfile')
     else:
         u_form = UserUpdateForm(instance=request.user)
     context = {
@@ -59,6 +62,8 @@ def editProfile(request):
 
 ############################################################
 # myOrders related pages
+
+
 @login_required
 def showAllOrders(request):
     return render(request, 'rideSharing/showAllorders.html')
@@ -307,6 +312,24 @@ def driverConfirmOrder(request, rid):
     ride.driver = request.user.username
     ride.status = RideStatus.CONFIRMED
     ride.save()
+    send_mail(
+        f'Your ride has been confirmed!',
+        f'Dear ' + ride.owner.username + f', \nYour ride to ' +
+        ride.addr + f'has been confirmed!',
+        settings.EMAIL_HOST_USER,
+        [ride.owner.email],
+        fail_silently=False
+    )
+    if(ride.sharer != None):
+        sharer = User.objects.filter(username=ride.sharer).first()
+        send_mail(
+            f'Your ride has been confirmed!',
+            f'Dear ' + ride.sharer + f', \nYour ride to ' +
+            ride.addr + f'has been confirmed!',
+            settings.EMAIL_HOST_USER,
+            [sharer.email],
+            fail_silently=False
+        )
     return redirect('rideSharing-home')
 
 

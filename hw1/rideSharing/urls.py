@@ -32,7 +32,6 @@ urlpatterns = [
     path('vehicleDelete/', views.vehicleDelete, name='vehicleDelete'),
     path('driverConfirmOrder/<int:rid>', views.driverConfirmOrder, name='driverConfirmOrder'),
     
-
     # owner
     path('ownerRequestOrder/', login_required(views.ownerRequestOrder.as_view()), name='ownerRequestOrder'),
 
