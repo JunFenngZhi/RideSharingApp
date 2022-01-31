@@ -1,7 +1,8 @@
 
 TODO List:
 8、owner修改订单后，将不符合要求的sharer移除（通知sharer)
-14、司机接单后，给owner和shareer发邮件 （峰）
+17、完善其他前端页面（炫）
+18、封装进docker，提交作业
 
 
 

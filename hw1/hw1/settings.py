@@ -135,3 +135,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'rideSharing-home'  # redirect the login to home page instead of profile.
 
 LOGIN_URL = 'login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+
+EMAIL_HOST_USER = '793298032@qq.com'
+EMAIL_HOST_PASSWORD =  'rswdrogxqdfrbaje'
+
+EMAIL_SUBJECT_PREFIX = '[rideSharing]'
